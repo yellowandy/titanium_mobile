@@ -77,10 +77,12 @@
 		enterCurve = UIViewAnimationCurveEaseIn;
 		leaveDuration = 0.3;
 		enterDuration = 0.3;
+		
+		// Set up the initial orientation modes
+		[self setOrientationModes:nil];
 	}
 	return self;
 }
-
 
 -(CGRect)resizeView
 {
@@ -160,7 +162,6 @@
 	//The iPhone OS wouldn't send this method.
 		[self willAnimateRotationToInterfaceOrientation:newOrientation duration:[[UIApplication sharedApplication] statusBarOrientationAnimationDuration]];
 	}
-
 }
 
 
