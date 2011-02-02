@@ -138,6 +138,9 @@ public class TiC {
 	public static final String PROPERTY_FLAGS = "flags";
 	public static final String PROPERTY_FOCUSABLE = "focusable";
 	public static final String PROPERTY_FONT = "font";
+	public static final String PROPERTY_FONT_FAMILY = "font-family";
+	public static final String PROPERTY_FONT_WEIGHT = "font-weight";
+	public static final String PROPERTY_FONT_SIZE = "font-size";
 	public static final String PROPERTY_FOOTER = "footer";
 	public static final String PROPERTY_FOOTER_TITLE = "footerTitle";
 	public static final String PROPERTY_FOOTER_VIEW = "footerView";
@@ -216,6 +219,7 @@ public class TiC {
 	public static final String PROPERTY_SELECTED_BACKGROUND_COLOR = "selectedBackgroundColor";
 	public static final String PROPERTY_SELECTED_BACKGROUND_IMAGE = "selectedBackgroundImage";
 	public static final String PROPERTY_SELECTED_INDEX = "selectedIndex";
+	public static final String PROPERTY_SELECTION_INDICATOR = "selectionIndicator";
 	public static final String PROPERTY_SEPARATOR_COLOR = "separatorColor";
 	public static final String PROPERTY_SIZE = "size";
 	public static final String PROPERTY_SOFT_KEYBOARD_ON_FOCUS = "softKeyboardOnFocus";
@@ -243,6 +247,7 @@ public class TiC {
 	public static final String PROPERTY_VERTICAL_ALIGN = "verticalAlign";
 	public static final String PROPERTY_VIBRATE_PATTERN = "vibratePattern";
 	public static final String PROPERTY_VISIBLE = "visible";
+	public static final String PROPERTY_VISIBLE_ITEMS = "visibleItems";
 	public static final String PROPERTY_WHEN = "when";
 	public static final String PROPERTY_WIDTH = "width";
 	public static final String PROPERTY_WINDOW = "window";
