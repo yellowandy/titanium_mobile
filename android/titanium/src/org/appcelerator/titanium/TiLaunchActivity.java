@@ -56,18 +56,7 @@ public abstract class TiLaunchActivity extends TiBaseActivity
 	 * This happens before the script is loaded.
 	 */
 	protected void contextCreated() { }
-
-	protected void waitForScript()
-	{
-		if (DBG) {
-			Log.d(TAG, "Waiting for JS Activity @ " + url.url + " to load");
-		}
-		messageQueue.startBlocking();
-		if (DBG) {
-			Log.d(TAG, "Loaded JS Activity @ " + url.url);
-		}
-	}
-
+	
 	protected void loadActivityScript()
 	{
 		try {
@@ -92,7 +81,7 @@ public abstract class TiLaunchActivity extends TiBaseActivity
 	{
 		Intent intent = getIntent();
 		if (intent != null) {
-			if (checkMissingLauncher(intent)) {
+			if (checkMissingLauncher(intent, savedInstanceState)) {
 				return;
 			}
 		}
@@ -112,18 +101,11 @@ public abstract class TiLaunchActivity extends TiBaseActivity
 	protected void windowCreated()
 	{
 		super.windowCreated();
-		// Load the activity JS
-		new Thread(new Runnable(){
-			@Override
-			public void run() {
-				loadActivityScript();
-			}
-		}).start();
-		waitForScript();
+		loadActivityScript();
 		scriptLoaded();
 	}
 
-	protected boolean checkMissingLauncher(Intent intent)
+	protected boolean checkMissingLauncher(Intent intent, Bundle savedInstanceState)
 	{
 		String action = intent.getAction();
 		if (action != null && action.equals(Intent.ACTION_MAIN)) {
@@ -142,6 +124,7 @@ public abstract class TiLaunchActivity extends TiBaseActivity
 				Log.e(TAG, "Android issue 2373 detected (missing intent CATEGORY_LAUNCHER), restarting app. Instances: " + getInstanceCount());
 				layout = new TiCompositeLayout(this);
 				setContentView(layout);
+				activityOnCreate(savedInstanceState);
 				return true;
 			}
 		}
