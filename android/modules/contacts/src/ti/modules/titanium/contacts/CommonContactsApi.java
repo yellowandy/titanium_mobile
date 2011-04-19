@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.appcelerator.kroll.KrollDict;
 import org.appcelerator.titanium.TiContext;
 import org.appcelerator.titanium.util.Log;
 
@@ -19,6 +20,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.Contacts;
+import android.provider.ContactsContract;
 
 public abstract class CommonContactsApi 
 {
@@ -132,11 +134,13 @@ public abstract class CommonContactsApi
 	{
 		long id;
 		String name;
+		String firstName;
+		String lastName;
 		String notes;
 		boolean hasImage = false;
 		Map<String, ArrayList<String>> emails = new HashMap<String, ArrayList<String>>();
 		Map<String, ArrayList<String>> phones = new HashMap<String, ArrayList<String>>();
-		Map<String, ArrayList<String>> addresses = new HashMap<String, ArrayList<String>>();
+		Map<String, ArrayList<KrollDict>> addresses = new HashMap<String, ArrayList<KrollDict>>();
 		
 		void addPersonInfoFromL4Cursor(Cursor cursor)
 		{
@@ -166,7 +170,7 @@ public abstract class CommonContactsApi
 			} else if (kind.equals(ContactsApiLevel5.KIND_EMAIL)) {
 				loadEmailFromL5DataRow(cursor);
 			} else if (kind.equals(ContactsApiLevel5.KIND_NAME)) {
-				//loadNameFromL5DataRow(cursor); TODO Structured names
+				loadNameFromL5DataRow(cursor);
 			} else if (kind.equals(ContactsApiLevel5.KIND_NOTE)) {
 				loadNoteFromL5DataRow(cursor);
 			} else if (kind.equals(ContactsApiLevel5.KIND_PHONE)) {
@@ -194,6 +198,14 @@ public abstract class CommonContactsApi
 			this.notes = cursor.getString(ContactsApiLevel5.DATA_COLUMN_NOTE);
 		}
 		
+		void loadNameFromL5DataRow(Cursor cursor)
+		{
+			Log.d(LCAT, "**********  Begining to Load Names From Contact API");
+			this.firstName = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME));
+			this.lastName  = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME));
+			Log.d(LCAT, "**********  First NAME IS: " + this.firstName);
+			Log.d(LCAT, "**********  Last NAME IS: " + this.lastName);
+		}
 		
 		void loadEmailFromL5DataRow(Cursor emailsCursor)
 		{
@@ -215,16 +227,36 @@ public abstract class CommonContactsApi
 		{
 			// TODO add structured addresss
 			String fullAddress = cursor.getString(ContactsApiLevel5.DATA_COLUMN_ADDRESS_FULL);
+			
+			//Start			
+			String street = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.StructuredPostal.STREET));
+			String city = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.StructuredPostal.CITY));
+			String state  = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.StructuredPostal.REGION));
+			String postalCode = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE));			
+			String country = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY));
+			
+			KrollDict dictValues = new KrollDict();
+			dictValues.put("Street", street);
+			dictValues.put("City", city);
+			dictValues.put("State", state);
+			dictValues.put("ZIP", postalCode);
+			dictValues.put("Country", country);
+			//END
+			
 			int type = cursor.getInt(ContactsApiLevel5.DATA_COLUMN_ADDRESS_TYPE);
 			String key = getPostalAddressTextType(type);
-			ArrayList<String> collection;
-			if (addresses.containsKey(key)) {
+			
+			ArrayList<KrollDict> collection;
+			if ( addresses.containsKey(key) ) 
+			{
 				collection = addresses.get(key);
-			} else {
-				collection = new ArrayList<String>();
+			} 
+			else 
+			{
+				collection = new ArrayList<KrollDict>();
 				addresses.put(key, collection);
 			}
-			collection.add(fullAddress);
+			collection.add(dictValues);
 		}
 		
 		void addEmailFromL4Cursor(Cursor emailsCursor)
@@ -258,19 +290,10 @@ public abstract class CommonContactsApi
 			collection.add(phoneNumber);
 		}
 		
+		
 		void addAddressFromL4Cursor(Cursor addressesCursor)
 		{
-			String fullAddress = addressesCursor.getString(ContactsApiLevel4.CONTACT_METHOD_COL_DATA);
-			int type = addressesCursor.getInt(ContactsApiLevel4.CONTACT_METHOD_COL_TYPE);
-			String key = getPostalAddressTextType(type);
-			ArrayList<String> collection;
-			if (addresses.containsKey(key)) {
-				collection = addresses.get(key);
-			} else {
-				collection = new ArrayList<String>();
-				addresses.put(key, collection);
-			}
-			collection.add(fullAddress);
+			
 		}
 		
 		void addPhotoInfoFromL4Cursor(Cursor photosCursor)
@@ -281,6 +304,8 @@ public abstract class CommonContactsApi
 		PersonProxy proxify(TiContext tiContext)
 		{
 			PersonProxy proxy = new PersonProxy(tiContext);
+			proxy.firstName = firstName;
+			proxy.lastName = lastName;
 			proxy.fullName = name;
 			proxy.note = notes;
 			proxy.setEmailFromMap(emails);

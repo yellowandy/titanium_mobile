@@ -86,18 +86,16 @@ public class PersonProxy extends KrollProxy
 		phone = contactMethodMapToDict(map);
 	}
 	
-	protected void setAddressFromMap(Map<String, ArrayList<String>> map)
+	protected void setAddressFromMap(Map<String, ArrayList<KrollDict>> map)
 	{
-		// We're supposed to support "Street", "CountryCode", "State", etc.
-		// But Android 1.6 does not have structured addresses so we're just put
-		// everything in Street.
 		address = new KrollDict();
-		for (String key: map.keySet()) {
-			ArrayList<String> values = map.get(key);
+		for (String key: map.keySet()) 
+		{
+			ArrayList<KrollDict> values = map.get(key);
 			KrollDict[] dictValues = new KrollDict[values.size()];
-			for (int i = 0; i < dictValues.length; i++) {
-				dictValues[i] = new KrollDict();
-				dictValues[i].put("Street", values.get(i));
+			for (int i = 0; i < dictValues.length; i++) 
+			{
+				dictValues[i] = values.get(i);
 			}
 			address.put(key, dictValues);
 		}
