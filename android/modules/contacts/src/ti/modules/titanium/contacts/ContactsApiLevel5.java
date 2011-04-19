@@ -72,6 +72,9 @@ public class ContactsApiLevel5 extends CommonContactsApi
 	protected static int DATA_COLUMN_NAME_MIDDLE = DATA_COLUMN_DATA5;
 	protected static int DATA_COLUMN_NAME_SUFFIX = DATA_COLUMN_DATA6;
 	
+	protected static int DATA_COLUMN_ORGANIZATION_NAME = DATA_COLUMN_DATA1;
+	protected static int DATA_COLUMN_ORGANIZATION_DEPT = DATA_COLUMN_DATA5;
+	
 	protected static int DATA_COLUMN_ADDRESS_FULL = DATA_COLUMN_DATA1;
 	protected static int DATA_COLUMN_ADDRESS_TYPE = DATA_COLUMN_DATA2;
 	protected static int DATA_COLUMN_ADDRESS_STREET = DATA_COLUMN_DATA4;
@@ -87,6 +90,7 @@ public class ContactsApiLevel5 extends CommonContactsApi
 	protected static String KIND_NOTE = "vnd.android.cursor.item/note";
 	protected static String KIND_PHONE = "vnd.android.cursor.item/phone_v2";
 	protected static String KIND_ADDRESS = "vnd.android.cursor.item/postal-address_v2";
+	protected static String KIND_ORGANIZATION = "vnd.android.cursor.item/organization";	
 	
 	
 	private static String[] PEOPLE_PROJECTION = new String[] {
@@ -100,7 +104,7 @@ public class ContactsApiLevel5 extends CommonContactsApi
 	
 	private static String INConditionForKinds =
 		"('" + KIND_ADDRESS + "','" + KIND_EMAIL + "','" +
-		KIND_NAME + "','" + KIND_NOTE + "','" + KIND_PHONE + "')";
+		KIND_NAME + "','" + KIND_NOTE + "','" + KIND_ORGANIZATION + "','" + KIND_PHONE + "')";
 	
 	protected ContactsApiLevel5(TiContext tiContext)
 	{
@@ -142,11 +146,11 @@ public class ContactsApiLevel5 extends CommonContactsApi
 		}
 		
 		Cursor cursor = tiContext.getActivity().managedQuery(
-				DataUri, 
-				DATA_PROJECTION, 
-				condition, 
-				additionalSelectionArgs, 
-				"display_name COLLATE LOCALIZED asc, contact_id asc, mimetype asc, is_super_primary desc, is_primary desc");
+				DataUri, //URI
+				DATA_PROJECTION, //List of columns to return.
+				condition,   //SQL
+				additionalSelectionArgs, //Arguments to the sql
+				"display_name COLLATE LOCALIZED asc, contact_id asc, mimetype asc, is_super_primary desc, is_primary desc"); //sort order
 		
 		while (cursor.moveToNext() && persons.size() < limit) {
 			long id = cursor.getLong(DATA_COLUMN_CONTACT_ID);

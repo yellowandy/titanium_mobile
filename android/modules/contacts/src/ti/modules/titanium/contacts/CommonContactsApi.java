@@ -137,6 +137,8 @@ public abstract class CommonContactsApi
 		String firstName;
 		String lastName;
 		String notes;
+		String organization;
+		String department;
 		boolean hasImage = false;
 		Map<String, ArrayList<String>> emails = new HashMap<String, ArrayList<String>>();
 		Map<String, ArrayList<String>> phones = new HashMap<String, ArrayList<String>>();
@@ -176,7 +178,19 @@ public abstract class CommonContactsApi
 			} else if (kind.equals(ContactsApiLevel5.KIND_PHONE)) {
 				loadPhoneFromL5DataRow(cursor);
 			}
+			else if (kind.equals(ContactsApiLevel5.KIND_ORGANIZATION)) {
+				loadOrganizationFromL5DataRow(cursor);
+			}
 		}
+		
+		void loadOrganizationFromL5DataRow(Cursor cursor)
+		{
+			Log.d(LCAT, "**********  Begining to Load Organization From Contact API");
+			this.organization = cursor.getString(ContactsApiLevel5.DATA_COLUMN_ORGANIZATION_NAME);
+			this.department = cursor.getString(ContactsApiLevel5.DATA_COLUMN_ORGANIZATION_DEPT);
+			
+			Log.d(LCAT, "**********  Received, org:" + this.organization + " dept: " + this.department);		}
+		
 		
 		void loadPhoneFromL5DataRow(Cursor phonesCursor)
 		{
@@ -308,6 +322,8 @@ public abstract class CommonContactsApi
 			proxy.lastName = lastName;
 			proxy.fullName = name;
 			proxy.note = notes;
+			proxy.organization = organization;
+			proxy.department = department;
 			proxy.setEmailFromMap(emails);
 			proxy.setPhoneFromMap(phones);
 			proxy.setAddressFromMap(addresses);
