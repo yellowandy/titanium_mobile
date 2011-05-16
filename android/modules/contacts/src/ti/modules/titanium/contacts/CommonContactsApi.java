@@ -85,6 +85,7 @@ public abstract class CommonContactsApi
 	// Happily, these codes are common across api level
 	protected static String getEmailTextType(int type) 
 	{
+		Log.d(LCAT, "**********  Begining to get email text type " + type);
 		String key = "other";
 		if (type == Contacts.ContactMethods.TYPE_HOME) {
 			key = "home";
@@ -139,6 +140,7 @@ public abstract class CommonContactsApi
 		String notes;
 		String organization;
 		String department;
+		String jobTitle;
 		boolean hasImage = false;
 		Map<String, ArrayList<String>> emails = new HashMap<String, ArrayList<String>>();
 		Map<String, ArrayList<String>> phones = new HashMap<String, ArrayList<String>>();
@@ -188,7 +190,7 @@ public abstract class CommonContactsApi
 			Log.d(LCAT, "**********  Begining to Load Organization From Contact API");
 			this.organization = cursor.getString(ContactsApiLevel5.DATA_COLUMN_ORGANIZATION_NAME);
 			this.department = cursor.getString(ContactsApiLevel5.DATA_COLUMN_ORGANIZATION_DEPT);
-			
+			this.jobTitle = cursor.getString(ContactsApiLevel5.DATA_COLUMN_ORGANIZATION_JOB_TITLE);
 			Log.d(LCAT, "**********  Received, org:" + this.organization + " dept: " + this.department);		}
 		
 		
@@ -217,8 +219,6 @@ public abstract class CommonContactsApi
 			Log.d(LCAT, "**********  Begining to Load Names From Contact API");
 			this.firstName = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME));
 			this.lastName  = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME));
-			Log.d(LCAT, "**********  First NAME IS: " + this.firstName);
-			Log.d(LCAT, "**********  Last NAME IS: " + this.lastName);
 		}
 		
 		void loadEmailFromL5DataRow(Cursor emailsCursor)
@@ -330,6 +330,7 @@ public abstract class CommonContactsApi
 			proxy.kind = ContactsModule.CONTACTS_KIND_PERSON;
 			proxy.id = id;
 			proxy.hasImage = this.hasImage;
+			proxy.jobTitle = jobTitle;
 			return proxy;
 			
 		}

@@ -74,6 +74,7 @@ public class ContactsApiLevel5 extends CommonContactsApi
 	
 	protected static int DATA_COLUMN_ORGANIZATION_NAME = DATA_COLUMN_DATA1;
 	protected static int DATA_COLUMN_ORGANIZATION_DEPT = DATA_COLUMN_DATA5;
+	protected static int DATA_COLUMN_ORGANIZATION_JOB_TITLE = DATA_COLUMN_DATA4;
 	
 	protected static int DATA_COLUMN_ADDRESS_FULL = DATA_COLUMN_DATA1;
 	protected static int DATA_COLUMN_ADDRESS_TYPE = DATA_COLUMN_DATA2;
